@@ -22,7 +22,7 @@ class RegisterViewController: UIViewController {
                 let request = NSMutableURLRequest(url:myUrl);
                 request.httpMethod = "POST";
                 
-                let postString = "email=\(usernameText.text!)&password=\(passwordText.text!)";
+                let postString = "username=\(usernameText.text!)&password=\(passwordText.text!)";
                 request.httpBody = postString.data(using: String.Encoding.utf8)
                 let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
                     
