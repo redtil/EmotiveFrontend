@@ -34,8 +34,24 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    func presentExampleController() {
+        let login = storyboard?.instantiateViewController(withIdentifier: "LoginViewController")
+        present(login!, animated: true, completion: nil)
+    }
+    
+    func checkLogin(){
+        if LoginManager.sharedInstance.isLoggedIn == false {
+            perform(#selector(self.presentExampleController), with: nil, afterDelay: 0)
+            
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        checkLogin()
+        
         let config = URLSessionConfiguration.default // Session Configuration
         let session = URLSession(configuration: config) // Load configuration into Session
         let url = URL(string: "http://localhost:3000/get-data")!
@@ -51,7 +67,6 @@ class ViewController: UIViewController {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data!,options: JSONSerialization.ReadingOptions.mutableContainers) as? NSDictionary
                         //Implement your logic
-                    print("Begin of code")
                     let urls = json?["urls"] as! [AnyObject]
                     for urlObj in urls{
                         let url = urlObj["url"] as! String
