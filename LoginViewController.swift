@@ -16,8 +16,36 @@ class LoginViewController: UIViewController {
     @IBAction func loginButtonTapped(_ sender: UIButton) {
         if LoginManager.sharedInstance.loginWithUsername(username: usernameText.text!,
                                                          password:passwordText.text!){
-            //Logged in!
-            dismiss(animated: true, completion: nil)
+            let myUrl = URL(string:"http://localhost:3000/users/login")!;
+            let request = NSMutableURLRequest(url:myUrl);
+            request.httpMethod = "POST";
+            
+            let postString = "username=\(usernameText.text!)&password=\(passwordText.text!)";
+            request.httpBody = postString.data(using: String.Encoding.utf8)
+            let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
+             
+                if let data = data {
+                    do{
+                        let json = try JSONSerialization.jsonObject(with: data,options: JSONSerialization.ReadingOptions.mutableContainers) as? NSDictionary
+                        if let parseJSON = json {
+                            let resultValue = parseJSON["status"] as! String
+                            print(resultValue)
+                            if resultValue == "success" {
+                                print("I am inside success")
+                                self.dismiss(animated: true, completion: nil)
+                            }
+                        }
+                        
+                    } catch let error as NSError {
+                        print(error.localizedDescription)
+                    }
+                } else if let error = error {
+                    print(error.localizedDescription)
+                }
+                
+            })
+            task.resume()
+            
         } else{
             //Log in failed
         }
