@@ -12,6 +12,7 @@ class LoginViewController: UIViewController {
 
     @IBOutlet var usernameText: UITextField!
     @IBOutlet var passwordText: UITextField!
+
     
     @IBAction func loginButtonTapped(_ sender: UIButton) {
         if LoginManager.sharedInstance.loginWithUsername(username: usernameText.text!,
@@ -31,8 +32,9 @@ class LoginViewController: UIViewController {
                             let resultValue = parseJSON["status"] as! String
                             print(resultValue)
                             if resultValue == "success" {
-                                print("I am inside success")
-                                self.dismiss(animated: true, completion: nil)
+                                print("I am inside login success")
+//                                self.dismiss(animated: true, completion: nil)
+                                self.performSegue(withIdentifier: "loginMainViewSegue", sender: nil)
                             }
                         }
                         
