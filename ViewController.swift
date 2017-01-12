@@ -8,10 +8,14 @@
 
 import UIKit
 
+var myUrlFirstPart = "https://emotivebackend-154820.appspot.com"
+//var myUrlFirstPart = "http://localhost:3000"
+
 class ViewController: UIViewController {
     
     @IBAction func logoutButtonTapped(_ sender: UIButton) {
-        let myUrl = URL(string: "http://localhost:3000/users/logout")!
+        let urlString = myUrlFirstPart + "/users/logout"
+        let myUrl = URL(string: urlString)!
         let request = NSMutableURLRequest(url:myUrl);
         request.httpMethod = "POST";
         
@@ -68,8 +72,9 @@ class ViewController: UIViewController {
     
     
     func respond(gesture: UISwipeGestureRecognizer){
-        let url = URL(string: "http://localhost:3000/get-data")!
-        print("I am in RESPOND")
+        let urlString = myUrlFirstPart + "/get-data";
+        let url = URL(string: urlString)!
+        print("I am in RESPOND to gesture")
         
         getDataFromUrl(url: url) { (data, response, error)  in
             guard let data = data, error == nil else { return }
@@ -121,9 +126,9 @@ class ViewController: UIViewController {
             swipeLeft.direction = UISwipeGestureRecognizerDirection.left
             view.addGestureRecognizer(swipeLeft)
             
-            
-            let url = URL(string: "http://localhost:3000/get-data")!
-            print("I am in RESPOND")
+            let urlString = myUrlFirstPart + "/get-data"
+            let url = URL(string: urlString)!
+            print("I am in RESPOND main view controller")
             
             getDataFromUrl(url: url) { (data, response, error)  in
                 guard let data = data, error == nil else { return }
@@ -156,6 +161,7 @@ class ViewController: UIViewController {
     }
     
     
+   
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

@@ -18,7 +18,8 @@ class RegisterViewController: UIViewController {
     @IBAction func registerButtonTapped(_ sender: UIButton) {
         if passwordText.text == passwordConfirmText.text {
             if LoginManager.sharedInstance.loginWithUsername(username:usernameText.text!,password:passwordText.text!){
-                let myUrl = URL(string:"http://localhost:3000/users/register")!;
+                let urlString = myUrlFirstPart + "/users/register"
+                let myUrl = URL(string:urlString)!;
                 let request = NSMutableURLRequest(url:myUrl);
                 request.httpMethod = "POST";
                 
@@ -30,10 +31,12 @@ class RegisterViewController: UIViewController {
                         print("error=\(error)")
                         return
                     }
+                    else{
+                        self.performSegue(withIdentifier: "registerToLoginSegue", sender: nil)
+                    }
                 })
                 task.resume()
-                
-                dismiss(animated: true, completion: nil)
+
             }
             else{
                 
