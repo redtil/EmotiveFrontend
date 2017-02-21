@@ -13,6 +13,15 @@ var myUrlFirstPart = "https://emotivebackend-154820.appspot.com"
 
 class ViewController: UIViewController {
     
+    var timer: Timer!
+    
+    @IBOutlet var imageDesriber: UITextView!
+   
+    @IBAction func uploadAlbumButton(_ sender: UIButton) {
+        print("performing segue to upload albums");
+        self.performSegue(withIdentifier: "uploadAlbumSegue", sender: nil)
+    }
+  
     @IBAction func logoutButtonTapped(_ sender: UIButton) {
         let urlString = myUrlFirstPart + "/users/logout"
         let myUrl = URL(string: urlString)!
@@ -57,6 +66,9 @@ class ViewController: UIViewController {
             completion(data, response, error)
             }.resume()
     }
+    func runTimedCode(){
+        
+    }
     
     func downloadImage(url: URL) {
         print("Download Started")
@@ -66,11 +78,12 @@ class ViewController: UIViewController {
             print("Download Finished")
             DispatchQueue.main.async() { () -> Void in
                 self.imageView.image = UIImage(data: data)
+                self.timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.runTimedCode), userInfo: nil, repeats: true)
             }
         }
     }
     
-    
+    //respond to swipe right or left
     func respond(gesture: UISwipeGestureRecognizer){
         let urlString = myUrlFirstPart + "/get-data";
         let url = URL(string: urlString)!
@@ -108,6 +121,8 @@ class ViewController: UIViewController {
         }
     }
     
+   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -118,6 +133,7 @@ class ViewController: UIViewController {
             self.performSegue(withIdentifier: "isNotLoggedInSegue", sender: nil)
             
         }else{
+            
             let swipeRight = UISwipeGestureRecognizer(target: self, action:#selector(respond))
             swipeRight.direction = UISwipeGestureRecognizerDirection.right
             view.addGestureRecognizer(swipeRight)
@@ -151,18 +167,11 @@ class ViewController: UIViewController {
                 } catch {
                     
                     print("error in JSONSerialization")
-                    
                 }
             }
 
         }
-        
-        
     }
-    
-    
-   
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
