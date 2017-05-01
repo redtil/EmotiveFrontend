@@ -26,7 +26,6 @@ class LoginViewController: UIViewController {
             request.httpBody = postString.data(using: String.Encoding.utf8)
             
             let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
-                
                 if let data = data {
                     do{
                         let json = try JSONSerialization.jsonObject(with: data,options: JSONSerialization.ReadingOptions.mutableContainers) as? NSDictionary
