@@ -18,6 +18,7 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
     
     var timer: Timer!
     var startCapturing = false
+    var seconds = 10
     
     
     @IBOutlet var imageDesriber: UITextView!
@@ -80,8 +81,23 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
             completion(data, response, error)
             }.resume()
     }
+    
     func runTimedCode(){
         startCapturing = true
+    }
+    
+    func decrementSecs(){
+        print("seconds is: ")
+        print(seconds)
+        if seconds >= 1{
+            seconds = seconds-1
+        }
+        else{
+            let swipeRight = UISwipeGestureRecognizer(target: self, action:#selector(respond))
+            swipeRight.direction = UISwipeGestureRecognizerDirection.right
+            
+            self.respond(gesture: swipeRight)
+        }
     }
     
     
@@ -193,7 +209,8 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
             print("Download Finished")
             DispatchQueue.main.async() { () -> Void in
                 self.imageView.image = UIImage(data: data)
-                self.timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.runTimedCode), userInfo: nil, repeats: false)
+                Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.runTimedCode), userInfo: nil, repeats: false)
+                Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.decrementSecs), userInfo: nil, repeats: true)
             }
         }
     }
@@ -202,6 +219,10 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
     func respond(gesture: UISwipeGestureRecognizer){
         let urlString = myUrlFirstPart + "/get-data";
         let url = URL(string: urlString)!
+        //before setting seconds back to 300 first calculate the time spent before swipe and send to the backend
+        var timeSpent:Double = Double(10 - seconds)/60.0
+        print(timeSpent)
+        seconds = 10
         print("I am in RESPOND to gesture")
         
         getDataFromUrl(url: url) { (data, response, error)  in
@@ -248,13 +269,15 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
             self.performSegue(withIdentifier: "isNotLoggedInSegue", sender: nil)
             
         }else{
-            
             let swipeRight = UISwipeGestureRecognizer(target: self, action:#selector(respond))
             swipeRight.direction = UISwipeGestureRecognizerDirection.right
-            view.addGestureRecognizer(swipeRight)
             
             let swipeLeft = UISwipeGestureRecognizer(target: self, action:#selector(respond))
             swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+            
+            view.addGestureRecognizer(swipeRight)
+            
+           
             view.addGestureRecognizer(swipeLeft)
             
             let urlString = myUrlFirstPart + "/get-data"
