@@ -9,8 +9,9 @@
 import UIKit
 import AVFoundation
 
-var myUrlFirstPart = "https://emotivebackend-154820.appspot.com"
+//var myUrlFirstPart = "https://emotivebackend-154820.appspot.com"
 //var myUrlFirstPart = "http://localhost:3000"
+var myUrlFirstPart = "http://10.192.233.92:3000"
 
 class ViewController: UIViewController,
     UIImagePickerControllerDelegate,
@@ -30,34 +31,42 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
     }
     
     @IBAction func logoutButtonTapped(_ sender: UIButton) {
-        let urlString = myUrlFirstPart + "/users/logout"
-        let myUrl = URL(string: urlString)!
-        let request = NSMutableURLRequest(url:myUrl);
-        request.httpMethod = "POST";
+        self.timer.invalidate()
+        self.timer = nil
+//        self.dismiss(animated: true, completion: nil)
+//        self.dismissViewControllerAnimated(true, completion: {})
         
-        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
-            
-            if let data = data {
-                do{
-                    let json = try JSONSerialization.jsonObject(with: data,options: JSONSerialization.ReadingOptions.mutableContainers) as? NSDictionary
-                    if let parseJSON = json {
-                        let resultValue = parseJSON["status"] as! String
-                        print(resultValue)
-                        if resultValue == "success" {
-                            print("I am inside success logout")
-                            self.performSegue(withIdentifier: "logoutSegue", sender: nil)
-                        }
-                    }
-                    
-                } catch let error as NSError {
-                    print(error.localizedDescription)
-                }
-            } else if let error = error {
-                print(error.localizedDescription)
-            }
-            
-        })
-        task.resume()
+//        navigationController?.setViewControllers(viewControllers!, animated: true)
+//        let urlString = myUrlFirstPart + "/users/logout"
+//        let myUrl = URL(string: urlString)!
+//        let request = NSMutableURLRequest(url:myUrl);
+//        request.httpMethod = "POST";
+//        
+//        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
+//            
+//            if let data = data {
+//                do{
+//                    let json = try JSONSerialization.jsonObject(with: data,options: JSONSerialization.ReadingOptions.mutableContainers) as? NSDictionary
+//                    if let parseJSON = json {
+//                        let resultValue = parseJSON["status"] as! String
+////                        print(resultValue)
+//                        if resultValue == "success" {
+//                            print("I am inside success logout")
+//                            self.timer.invalidate()
+//                            self.timer = nil
+////                            self.performSegue(withIdentifier: "logoutSegue", sender: nil)
+//                        }
+//                    }
+//                    
+//                } catch let error as NSError {
+//                    print(error.localizedDescription)
+//                }
+//            } else if let error = error {
+//                print(error.localizedDescription)
+//            }
+//            
+//        })
+//        task.resume()
     }
     
     
@@ -77,6 +86,7 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
     var count = 0
     
     func getDataFromUrl(url: URL, completion: @escaping (_ data: Data?, _  response: URLResponse?, _ error: Error?) -> Void) {
+        print(url)
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
             completion(data, response, error)
@@ -222,41 +232,41 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
 //        }
         
         
-        let imageData = UIImageJPEGRepresentation(appDelegate.capturedPhoto!, 1)
-        jsonObject.setValue(timeSpent, forKey: "timeSpent")
-        jsonObject.setValue(imageData?.base64EncodedString(), forKey: "imageData")
-
-        
-        let jsonData: NSData
-        
-        do {
-            jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: JSONSerialization.WritingOptions()) as NSData
-            let jsonString = NSString(data: jsonData as Data, encoding: String.Encoding.utf8.rawValue) as! String
-            print("json string = \(jsonString)")
-            request.addValue("/application/json",forHTTPHeaderField: "Content-Type")
-            request.httpBody = jsonData as Data
-        } catch _ {
-            print ("JSON Failure")
-        }
-        
-        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
-            
-            if let data = data {
-                do{
-                    let responseString = NSString(data: data, encoding: 8)
-                    print("responseString = \(responseString)")
-                    
-                } catch let error as NSError {
-                    print("I am in the first error")
-                    print(error.localizedDescription)
-                }
-            } else if let error = error {
-                print("I am in the second error")
-                print(error.localizedDescription)
-            }
-            
-        })
-        task.resume()
+//        let imageData = UIImageJPEGRepresentation(appDelegate.capturedPhoto!, 1)
+//        jsonObject.setValue(timeSpent, forKey: "timeSpent")
+//        jsonObject.setValue(imageData?.base64EncodedString(), forKey: "imageData")
+//
+//        
+//        let jsonData: NSData
+//        
+//        do {
+//            jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: JSONSerialization.WritingOptions()) as NSData
+//            let jsonString = NSString(data: jsonData as Data, encoding: String.Encoding.utf8.rawValue) as! String
+//            print("json string = \(jsonString)")
+//            request.addValue("/application/json",forHTTPHeaderField: "Content-Type")
+//            request.httpBody = jsonData as Data
+//        } catch _ {
+//            print ("JSON Failure")
+//        }
+//        
+//        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
+//            
+//            if let data = data {
+//                do{
+//                    let responseString = NSString(data: data, encoding: 8)
+//                    print("responseString = \(responseString)")
+//                    
+//                } catch let error as NSError {
+//                    print("I am in the first error")
+//                    print(error.localizedDescription)
+//                }
+//            } else if let error = error {
+//                print("I am in the second error")
+//                print(error.localizedDescription)
+//            }
+//            
+//        })
+//        task.resume()
     }
     
     //respond to swipe right or left
@@ -267,6 +277,8 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
         print(self.seconds)
         //before setting seconds back to 300 first calculate the time spent before swipe and send to the backend
         
+        self.timer.invalidate()
+        self.timer = nil
         
         self.seconds = 10
         print("I am in RESPOND to gesture")
@@ -282,9 +294,9 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
                     let url = urlObj["url"] as! String
                     
                     if let checkedUrl = URL(string: url) {
-                        print("I am in RESPOND3")
-                        print(cnt)
-                        print(self.count)
+//                        print("I am in RESPOND3")
+//                        print(cnt)
+//                        print(self.count)
                         if cnt == self.count{
                             self.count = self.count + 1
                             self.imageView.contentMode = .scaleAspectFit
@@ -294,7 +306,7 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
                     }
                     cnt = cnt + 1
                 }
-                print("End of code. The image will continue downloading in the background and it will be loaded when it ends.")
+                print("GestureResponse. The image will continue downloading in the background and it will be loaded when it ends.")
             } catch {
                 
                 print("error in JSONSerialization")
@@ -306,15 +318,40 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
     
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        if self.view.window != nil{
+            print("TRUE !!!!!")
+        }
+//        if self.view.window != nil {
+//            print("TRUE222!!!!!")
+//        }
+//            
+//        if self.isViewLoaded && (self.view.window != nil) {
+//            // viewController is visible
+//        }
+            
+        else{
+            super.viewDidLoad()
+            prepareCamera()
+            
+
+        }
+    }
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+//        if LoginManager.sharedInstance.isLoggedIn == false {
+//            //            perform(#selector(self.presentExampleController), with: nil, afterDelay: 0)
+//            
+//            print("performing segue");
+//            self.performSegue(withIdentifier: "isNotLoggedInSegue", sender: nil)
+//            
+//        }
+//        else{
         
-        if LoginManager.sharedInstance.isLoggedIn == false {
-            //            perform(#selector(self.presentExampleController), with: nil, afterDelay: 0)
-            
-            print("performing segue");
-            self.performSegue(withIdentifier: "isNotLoggedInSegue", sender: nil)
-            
-        }else{
             let swipeRight = UISwipeGestureRecognizer(target: self, action:#selector(respond))
             swipeRight.direction = UISwipeGestureRecognizerDirection.right
             
@@ -323,7 +360,7 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
             
             view.addGestureRecognizer(swipeRight)
             
-           
+            
             view.addGestureRecognizer(swipeLeft)
             
             let urlString = myUrlFirstPart + "/get-data"
@@ -331,11 +368,11 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
             print("I am in RESPOND main view controller")
             
             //camera is turned on
-//            startCameraCaptureProcess()
-            prepareCamera()
+            //            startCameraCaptureProcess()
             
             getDataFromUrl(url: url) { (data, response, error)  in
                 guard let data = data, error == nil else { return }
+                print("I am in getDataFromUrl")
                 do {
                     let json = try JSONSerialization.jsonObject(with: data,options: JSONSerialization.ReadingOptions.allowFragments) as? NSDictionary
                     let urls = json?["urls"] as! [AnyObject]
@@ -351,19 +388,15 @@ UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate{
                         }
                         
                     }
-                    print("End of code. The image will continue downloading in the background and it will be loaded when it ends.")
+                    print("viewDidLoad. The image will continue downloading in the background and it will be loaded when it ends.")
                 } catch {
                     
                     print("error in JSONSerialization")
                 }
             }
-            
-        }
+
+//        }
+        
     }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     
 }
